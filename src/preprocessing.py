@@ -1,5 +1,6 @@
 from pathlib import Path
 import pandas as pd
+import numpy as np
 
 
 def load_raw_data(data_path):
@@ -147,3 +148,53 @@ def missing_value_summary(df):
         "missing_percentage",
         ascending=False
     )
+
+
+def demand_statistics(sales, sales_columns):
+    """
+    Calculate overall demand distribution statistics.
+    """
+    values = sales[sales_columns].to_numpy().flatten()
+
+    return {
+        "count": len(values),
+        "minimum": float(np.min(values)),
+        "maximum": float(np.max(values)),
+        "mean": float(np.mean(values)),
+        "median": float(np.median(values)),
+        "std": float(np.std(values)),
+        "p95": float(np.percentile(values, 95)),
+        "p99": float(np.percentile(values, 99)),
+        "p99_9": float(np.percentile(values, 99.9)),
+    }
+
+
+def series_demand_statistics(sales, sales_columns):
+    """
+    Calculate demand statistics for each item-store series.
+    """
+    numeric_sales = sales[sales_columns]
+
+    stats = pd.DataFrame({
+        "item_id": sales["item_id"],
+        "store_id": sales["store_id"],
+        "dept_id": sales["dept_id"],
+        "cat_id": sales["cat_id"],
+        "state_id": sales["state_id"],
+        "mean_demand": numeric_sales.mean(axis=1),
+        "std_demand": numeric_sales.std(axis=1),
+        "total_demand": numeric_sales.sum(axis=1),
+        "zero_days": (numeric_sales == 0).sum(axis=1)
+    })
+
+    stats["zero_percentage"] = (
+        stats["zero_days"] /
+        len(sales_columns)
+    ) * 100
+
+    stats["cv"] = (
+        stats["std_demand"] /
+        stats["mean_demand"].replace(0, np.nan)
+    )
+
+    return stats
