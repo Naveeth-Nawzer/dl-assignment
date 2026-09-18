@@ -1,0 +1,12 @@
+metric,value
+total_demand_observations,58327370.0
+zero_demand_observations,39777094.0
+zero_demand_percentage,68.19627560783213
+minimum_demand,0.0
+maximum_demand,763.0
+mean_demand,1.126322153733316
+median_demand,0.0
+p95_demand,5.0
+p99_demand,15.0
+p99_9_demand,47.0
+observations_above_p99_9,56800.0

@@ -12,8 +12,9 @@ env/
 .venv/
 
 # Dataset
-data/
-*.csv
+data/m5/
+data/raw/
+data/processed/
 *.zip
 
 # Model files

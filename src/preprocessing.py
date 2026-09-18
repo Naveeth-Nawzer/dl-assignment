@@ -198,3 +198,144 @@ def series_demand_statistics(sales, sales_columns):
     )
 
     return stats
+
+
+def validate_cleaned_data(calendar, prices, sales):
+    """
+    Validate the cleaned M5 datasets.
+
+    Returns a dictionary containing key data-quality checks.
+    """
+    sales_columns = [
+        col for col in sales.columns
+        if col.startswith("d_")
+    ]
+
+    results = {
+        "calendar_shape": calendar.shape,
+        "prices_shape": prices.shape,
+        "sales_shape": sales.shape,
+
+        "calendar_duplicates": int(
+            calendar.duplicated().sum()
+        ),
+
+        "price_duplicates": int(
+            prices.duplicated().sum()
+        ),
+
+        "sales_duplicates": int(
+            sales.duplicated().sum()
+        ),
+
+        "calendar_missing": int(
+            calendar.isna().sum().sum()
+        ),
+
+        "price_missing": int(
+            prices.isna().sum().sum()
+        ),
+
+        "sales_missing": int(
+            sales[sales_columns].isna().sum().sum()
+        ),
+
+        "negative_sales": int(
+            (sales[sales_columns] < 0).sum().sum()
+        ),
+
+        "negative_prices": int(
+            (prices["sell_price"] < 0).sum()
+        ),
+
+        "infinite_prices": int(
+            np.isinf(prices["sell_price"]).sum()
+        )
+    }
+
+    return results
+
+
+def preprocess_m5(data_path, output_path=None):
+    """
+    Run the complete M5 preprocessing pipeline.
+
+    Steps:
+    1. Load raw M5 datasets
+    2. Clean calendar data
+    3. Handle calendar missing values
+    4. Clean sell-price data
+    5. Clean sales data
+    6. Validate the cleaned datasets
+    7. Optionally save the processed datasets
+
+    Parameters
+    ----------
+    data_path : str or Path
+        Directory containing the raw M5 CSV files.
+
+    output_path : str or Path, optional
+        Directory where cleaned datasets will be saved.
+
+    Returns
+    -------
+    calendar : pandas.DataFrame
+        Cleaned calendar dataset.
+
+    prices : pandas.DataFrame
+        Cleaned sell-price dataset.
+
+    sales : pandas.DataFrame
+        Cleaned sales dataset.
+
+    validation : dict
+        Data-quality validation results.
+    """
+
+    # Step 1: Load raw data
+    calendar, prices, sales = load_raw_data(data_path)
+
+    # Step 2: Clean calendar
+    calendar = clean_calendar(calendar)
+
+    # Step 3: Handle calendar missing values
+    calendar = handle_calendar_missing_values(calendar)
+
+    # Step 4: Clean prices
+    prices = clean_prices(prices)
+
+    # Step 5: Clean sales
+    sales = clean_sales(sales)
+
+    # Step 6: Validate cleaned datasets
+    validation = validate_cleaned_data(
+        calendar,
+        prices,
+        sales
+    )
+
+    # Step 7: Save processed datasets if requested
+    if output_path is not None:
+
+        output_path = Path(output_path)
+        output_path.mkdir(
+            parents=True,
+            exist_ok=True
+        )
+
+        calendar.to_csv(
+            output_path / "calendar_clean.csv",
+            index=False
+        )
+
+        prices.to_csv(
+            output_path / "sell_prices_clean.csv",
+            index=False
+        )
+
+        sales.to_csv(
+            output_path / "sales_train_validation_clean.csv",
+            index=False
+        )
+
+    return calendar, prices, sales, validation
