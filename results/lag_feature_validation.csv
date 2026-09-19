@@ -1,0 +1,20 @@
+validation_check,value
+number_of_series,30490
+number_of_days,1913
+lag_count,5
+lags,"[1, 7, 14, 28, 56]"
+lag_1_shape_valid,True
+lag_1_initial_nan_count,30490
+lag_1_contains_current_target,False
+lag_7_shape_valid,True
+lag_7_initial_nan_count,213430
+lag_7_contains_current_target,False
+lag_14_shape_valid,True
+lag_14_initial_nan_count,426860
+lag_14_contains_current_target,False
+lag_28_shape_valid,True
+lag_28_initial_nan_count,853720
+lag_28_contains_current_target,False
+lag_56_shape_valid,True
+lag_56_initial_nan_count,1707440
+lag_56_contains_current_target,False

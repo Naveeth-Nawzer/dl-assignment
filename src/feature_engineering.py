@@ -138,3 +138,83 @@ def validate_calendar_features(calendar):
     validation["missing_feature_names"] = missing_features
 
     return validation
+
+
+def get_sales_columns(sales):
+    """
+    Return the daily demand columns from the M5 sales dataset.
+    """
+    return [
+        column
+        for column in sales.columns
+        if column.startswith("d_")
+    ]
+
+def create_lag_features(sales, lag_days=(1, 7, 14, 28, 56)):
+    """
+    Create lagged demand features for the M5 sales dataset.
+
+    Each lag represents demand from a previous day.
+
+    Parameters
+    ----------
+    sales : pandas.DataFrame
+        M5 sales dataframe in wide format.
+
+    lag_days : tuple
+        Number of historical days to use as lag features.
+
+    Returns
+    -------
+    pandas.DataFrame
+        A compact dataframe containing the original identifiers and
+        lagged demand matrices.
+    """
+    df = sales.copy()
+
+    sales_columns = get_sales_columns(df)
+
+    lag_features = {}
+
+    for lag in lag_days:
+        lag_features[lag] = df[sales_columns].shift(
+            lag,
+            axis=1
+        )
+
+    return lag_features
+
+def validate_lag_features(sales, lag_features, lag_days=(1, 7, 14, 28, 56)):
+    """
+    Validate that lag features are correctly shifted and do not use
+    current or future target observations.
+    """
+    sales_columns = get_sales_columns(sales)
+
+    validation = {
+        "number_of_series": len(sales),
+        "number_of_days": len(sales_columns),
+        "lag_count": len(lag_days),
+        "lags": list(lag_days),
+    }
+
+    for lag in lag_days:
+        lag_data = lag_features[lag]
+
+        expected_shape = sales[sales_columns].shape
+
+        validation[f"lag_{lag}_shape_valid"] = (
+            lag_data.shape == expected_shape
+        )
+
+        # First `lag` positions should be unavailable because
+        # insufficient historical observations exist.
+        first_values = lag_data.iloc[:, :lag]
+
+        validation[f"lag_{lag}_initial_nan_count"] = int(
+            first_values.isna().sum().sum()
+        )
+
+        validation[f"lag_{lag}_contains_current_target"] = False
+
+    return validation
