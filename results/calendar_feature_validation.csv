@@ -1,0 +1,2 @@
+rows,columns,missing_dates,duplicate_dates,dates_sorted,missing_required_features,invalid_month_values,invalid_day_of_week_values,invalid_quarter_values,missing_feature_names
+1969,27,0,0,True,0,0,0,0,[]
