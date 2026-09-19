@@ -1,0 +1,25 @@
+# Shared settings for all four models. Change these only as a team, so the comparison stays fair.
+
+data:
+  sample_frac: 0.10          # stratified by store_id x cat_id, gives ~3,000 series
+  sample_seed: 42
+  min_train_history: 180     # days of sales history a series needs before the validation period
+  lookback: 28
+  horizon: 7
+  n_days: 1913               # d_1 .. d_1913 in sales_train_validation.csv
+  train_end: 1339            # day index where validation starts (70/15/15 split)
+  val_end: 1626              # day index where test starts
+  train_stride: 3            # stride 1 is ~3x slower and its windows are almost identical
+  eval_stride: 7             # non-overlapping 7-day target blocks for validation and test
+
+training:
+  epochs: 30
+  batch_size: 1024
+  learning_rate: 0.001
+  weight_decay: 0.0
+  grad_clip: 1.0
+  patience: 5                # early stopping, in epochs without validation improvement
+  lr_factor: 0.5
+  lr_patience: 2
+  max_train_batches: null    # set an integer to cap batches per epoch for quick runs
+  device: auto               # auto, cuda, mps or cpu
