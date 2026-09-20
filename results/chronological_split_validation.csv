@@ -1,0 +1,10 @@
+validation_check,value
+train_days,1530
+validation_days,191
+test_days,192
+train_validation_overlap,0
+train_test_overlap,0
+validation_test_overlap,0
+train_before_validation,True
+validation_before_test,True
+split_valid,True
