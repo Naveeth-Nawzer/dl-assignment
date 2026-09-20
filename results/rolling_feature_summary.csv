@@ -1,0 +1,6 @@
+feature,window_days,purpose
+rolling_mean_7,7,Recent demand level
+rolling_mean_14,14,Short-to-medium demand level
+rolling_mean_28,28,Medium-term demand level
+rolling_std_7,7,Recent demand variability
+rolling_std_28,28,Medium-term demand variability

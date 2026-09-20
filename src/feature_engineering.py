@@ -218,3 +218,129 @@ def validate_lag_features(sales, lag_features, lag_days=(1, 7, 14, 28, 56)):
         validation[f"lag_{lag}_contains_current_target"] = False
 
     return validation
+
+
+def create_rolling_features(
+    sales,
+    rolling_windows=(7, 14, 28)
+):
+    """
+    Create leakage-safe rolling demand features.
+
+    The demand series is shifted by one time step before calculating
+    rolling statistics so that the current target is never included.
+
+    Parameters
+    ----------
+    sales : pandas.DataFrame
+        M5 sales dataframe in wide format.
+
+    rolling_windows : tuple
+        Rolling window sizes in days.
+
+    Returns
+    -------
+    dict
+        Dictionary containing rolling mean and standard deviation matrices.
+    """
+
+    df = sales.copy()
+
+    sales_columns = get_sales_columns(df)
+
+    demand = df[sales_columns]
+
+    rolling_features = {}
+
+    for window in rolling_windows:
+
+        shifted_demand = demand.shift(
+            1,
+            axis=1
+        )
+
+        rolling_features[f"rolling_mean_{window}"] = (
+            shifted_demand.T
+            .rolling(
+                window=window,
+                min_periods=window
+            )
+            .mean().T
+        )
+
+        rolling_features[f"rolling_std_{window}"] = (
+            shifted_demand.T
+            .rolling(
+                window=window,
+                min_periods=window
+            )
+            .std().T
+        )
+
+    return rolling_features
+
+def validate_rolling_features(
+    sales,
+    rolling_features,
+    rolling_windows=(7, 14, 28)
+):
+    """
+    Validate rolling feature shapes and leakage-safe initial positions.
+    """
+
+    sales_columns = get_sales_columns(sales)
+
+    validation = {
+        "number_of_series": len(sales),
+        "number_of_days": len(sales_columns),
+        "rolling_window_count": len(rolling_windows),
+        "rolling_windows": list(rolling_windows)
+    }
+
+    for window in rolling_windows:
+
+        mean_key = f"rolling_mean_{window}"
+        std_key = f"rolling_std_{window}"
+
+        mean_data = rolling_features[mean_key]
+        std_data = rolling_features[std_key]
+
+        expected_shape = sales[sales_columns].shape
+
+        validation[f"{mean_key}_shape_valid"] = (
+            mean_data.shape == expected_shape
+        )
+
+        validation[f"{std_key}_shape_valid"] = (
+            std_data.shape == expected_shape
+        )
+
+        # Because the rolling calculation uses shift(1), the first
+        # `window` observations cannot have a complete historical window.
+        expected_initial_missing = window
+
+        actual_mean_missing = int(
+            mean_data.iloc[:, :window].isna().all(axis=0).sum()
+        )
+
+        actual_std_missing = int(
+            std_data.iloc[:, :window].isna().all(axis=0).sum()
+        )
+
+        validation[
+            f"{mean_key}_initial_missing_positions"
+        ] = actual_mean_missing
+
+        validation[
+            f"{std_key}_initial_missing_positions"
+        ] = actual_std_missing
+
+        validation[
+            f"{mean_key}_expected_initial_missing_positions"
+        ] = expected_initial_missing
+
+        validation[
+            f"{std_key}_expected_initial_missing_positions"
+        ] = expected_initial_missing
+
+    return validation
