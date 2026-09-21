@@ -1,0 +1,4 @@
+dataset,target_start_index,target_end_index,number_of_target_days,number_of_series,lookback_days,features_per_timestep
+train,28,1529,1502,30490,28,1
+validation,1530,1720,191,30490,28,1
+test,1721,1912,192,30490,28,1
