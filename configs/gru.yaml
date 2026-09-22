@@ -1,0 +1,13 @@
+model:
+  name: gru
+  hidden_size: 64
+  num_layers: 2
+  dropout: 0.2
+
+# Validation-only search space for notebooks/05_model_gru.ipynb.
+tuning:
+  hidden_size: [64, 128]
+  num_layers: [1, 2]
+  dropout: [0.1, 0.3]
+
+seeds: [42, 43, 44]
