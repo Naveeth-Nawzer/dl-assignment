@@ -12,9 +12,19 @@ dl-assignment/
 ├── notebooks/
 │   ├── 01_raw_data_exploration.ipynb
 │   ├── 02_data_cleaning.ipynb
+│   ├── 05_model_gru.ipynb
 │   └── ...
+├── configs/
+│   ├── experiment.yaml   ← shared data split and training settings
+│   └── gru.yaml          ← GRU hyperparameters, tuning grid and seeds
 ├── src/
-│   └── preprocessing.py
+│   ├── preprocessing.py  ← cleaning and validation
+│   ├── features.py       ← series sample and feature arrays
+│   ├── dataset.py        ← train/val/test windows and batch loader
+│   ├── baselines.py      ← naive, seasonal naive, 28-day moving average
+│   ├── metrics.py        ← MAE, RMSE, R², WAPE, sMAPE
+│   ├── models/           ← one file per model (gru.py)
+│   └── train.py          ← shared training loop with early stopping
 ├── data/              
 │   └── m5/
 │       ├── extracted/ 
@@ -108,6 +118,27 @@ USE_DRIVE = False
 
 ### 4. Open in VS Code
 Install the **Jupyter** extension, select `.venv` kernel, run cells.
+
+---
+
+## Training a Model
+
+All models share `configs/experiment.yaml` and `src/train.py`, so they get the same data, split and metrics.
+
+```bash
+# Train the GRU and evaluate on validation only
+python src/train.py --config configs/gru.yaml --seed 42
+
+# Final run: also evaluate once on the test period
+python src/train.py --config configs/gru.yaml --seed 42 --test
+```
+
+The first run builds `data/m5/processed/features.npz`. Later runs load this cache.
+If you change the `data:` section of `experiment.yaml`, delete the cache.
+Results go to `results/metrics/`, and checkpoints go to `results/checkpoints/` (not in Git).
+
+To add a model, put the class in `src/models/`, register it in `src/models/__init__.py`,
+and add a config file with `model.name` set to its key.
 
 ---
 
