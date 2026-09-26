@@ -1,0 +1,53 @@
+{
+  "run_name": "gru_hidden_size128_num_layers1_dropout0.3_seed42",
+  "model": {
+    "name": "gru",
+    "hidden_size": 128,
+    "num_layers": 1,
+    "dropout": 0.3
+  },
+  "data": {
+    "sample_frac": 0.1,
+    "sample_seed": 42,
+    "min_train_history": 180,
+    "lookback": 28,
+    "horizon": 7,
+    "n_days": 1913,
+    "train_end": 1339,
+    "val_end": 1626,
+    "train_stride": 3,
+    "eval_stride": 7
+  },
+  "training": {
+    "epochs": 30,
+    "batch_size": 1024,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0,
+    "grad_clip": 1.0,
+    "patience": 5,
+    "lr_factor": 0.5,
+    "lr_patience": 2,
+    "max_train_batches": null,
+    "device": "auto"
+  },
+  "seed": 42,
+  "device": "cuda",
+  "n_series": 2642,
+  "n_windows": {
+    "train": 890703,
+    "val": 108322,
+    "test": 108322
+  },
+  "parameters": 56583,
+  "epochs_run": 13,
+  "best_epoch": 8,
+  "train_seconds": 97.40333925899995,
+  "inference_ms_per_1000_windows": 3.982442910951673,
+  "val": {
+    "mae": 0.9823744813735608,
+    "rmse": 2.340813702437951,
+    "r2": 0.6498761106164668,
+    "wape": 74.27532243057175,
+    "smape": 147.10608593925508
+  }
+}
