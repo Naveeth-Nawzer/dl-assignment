@@ -1,0 +1,60 @@
+{
+  "run_name": "lstm_hidden_size64_num_layers2_dropout0.2_seed42",
+  "model": {
+    "name": "lstm",
+    "hidden_size": 64,
+    "num_layers": 2,
+    "dropout": 0.2
+  },
+  "data": {
+    "sample_frac": 0.1,
+    "sample_seed": 42,
+    "min_train_history": 180,
+    "lookback": 28,
+    "horizon": 7,
+    "n_days": 1913,
+    "train_end": 1339,
+    "val_end": 1626,
+    "train_stride": 3,
+    "eval_stride": 7
+  },
+  "training": {
+    "epochs": 30,
+    "batch_size": 1024,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0,
+    "grad_clip": 1.0,
+    "patience": 5,
+    "lr_factor": 0.5,
+    "lr_patience": 2,
+    "max_train_batches": null,
+    "device": "cuda"
+  },
+  "seed": 42,
+  "device": "cuda",
+  "n_series": 2642,
+  "n_windows": {
+    "train": 890703,
+    "val": 108322,
+    "test": 108322
+  },
+  "parameters": 54471,
+  "epochs_run": 15,
+  "best_epoch": 10,
+  "train_seconds": 100.24795352899991,
+  "inference_ms_per_1000_windows": 2.9876039031781776,
+  "val": {
+    "mae": 0.971276742968191,
+    "rmse": 2.3391869549198137,
+    "r2": 0.6503625784277732,
+    "wape": 73.4362451602049,
+    "smape": 146.52095747371814
+  },
+  "test": {
+    "mae": 0.994959,
+    "rmse": 2.324957,
+    "r2": 0.68125,
+    "wape": 71.221903,
+    "smape": 144.205558
+  }
+}
