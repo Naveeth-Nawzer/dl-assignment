@@ -1,0 +1,2 @@
+train_scaled_mean,train_scaled_std,validation_scaled_mean,validation_scaled_std,test_scaled_mean,test_scaled_std,scaler_mean,scaler_scale,training_mean_before_scaling,training_std_before_scaling,training_centered,training_standardized,scaler_fitted_on_training_only,scaling_valid
+-1.2057955522948305e-08,0.9999999403953552,0.048698365688323975,0.9347698092460632,0.05414504557847977,0.8964580297470093,1.085791248389593,3.9363701492578524,1.0857912302017212,3.9363698959350586,True,True,True,True

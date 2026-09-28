@@ -1,0 +1,4 @@
+split,start_day,end_day,start_date,end_date,number_of_days
+train,d_1,d_1530,2011-01-29,2015-04-07,1530
+validation,d_1531,d_1721,2015-04-08,2015-10-15,191
+test,d_1722,d_1913,2015-10-16,2016-04-24,192

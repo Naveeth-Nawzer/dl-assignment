@@ -1,0 +1,2 @@
+model,best_epoch,validation_mse,MAE,MSE,RMSE,R2,parameters,training_time_seconds,training_time_minutes
+Transformer,6,0.26943889669813426,0.9160395860671997,4.151002407073975,2.03740089503121,0.6666494607925415,69185,39452.7418968,657.54569828
