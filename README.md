@@ -7,29 +7,37 @@ for Walmart M5 retail demand forecasting.
 
 ## Project Structure
 
-```
+```text
 dl-assignment/
 ├── notebooks/
-│   ├── 01_raw_data_exploration.ipynb
+│   ├── 01_raw_data_exploration.ipynb   ← EDA, zero-demand and seasonality analysis
 │   ├── 02_data_cleaning.ipynb
-│   ├── 05_model_gru.ipynb
-│   └── ...
+│   ├── 03_feature_engineering.ipynb    ← Calendar and temporal feature creation
+│   ├── 04_data_splitting.ipynb         ← Strict chronological splitting
+│   ├── 05_scaling.ipynb                ← Training-only scaling to prevent leakage
+│   ├── 05_model_gru.ipynb              ← Baseline GRU/LSTM training & evaluation
+│   ├── 06_sequence_generation.ipynb    ← 28-day sliding window sequence mapping
+│   ├── 08_tcn.ipynb                    ← Dilated causal convolutional network
+│   ├── 10_transformer.ipynb            ← Multi-head self-attention network
+│   └── 11_unified_evaluation.ipynb     ← Unified error analysis & comparative residual plots
 ├── configs/
-│   ├── experiment.yaml   ← shared data split and training settings
-│   └── gru.yaml          ← GRU hyperparameters, tuning grid and seeds
+│   ├── experiment.yaml                 ← shared data split and training settings
+│   └── gru.yaml                        ← GRU hyperparameters, tuning grid and seeds
 ├── src/
-│   ├── preprocessing.py  ← cleaning and validation
-│   ├── features.py       ← series sample and feature arrays
-│   ├── dataset.py        ← train/val/test windows and batch loader
-│   ├── baselines.py      ← naive, seasonal naive, 28-day moving average
-│   ├── metrics.py        ← MAE, RMSE, R², WAPE, sMAPE
-│   ├── models/           ← one file per model (gru.py)
-│   └── train.py          ← shared training loop with early stopping
-├── data/              
-│   └── m5/
-│       ├── extracted/ 
-│       └── processed/ 
+│   ├── preprocessing.py                ← cleaning and validation
+│   ├── features.py                     ← series sample and feature arrays
+│   ├── dataset.py                      ← train/val/test windows and batch loader
+│   ├── baselines.py                    ← naive, seasonal naive, 28-day moving average
+│   ├── metrics.py                      ← MAE, RMSE, R², WAPE, sMAPE
+│   ├── models/                         ← one file per model (gru.py)
+│   └── train.py                        ← shared training loop with early stopping
+├── data/                               ← (Ignored) Raw Kaggle M5 CSVs
 ├── results/
+│   ├── figures/                        ← Generated architecture diagrams and plots
+│   ├── predictions/                    ← Saved raw numpy prediction arrays
+│   └── checkpoints/                    ← Best model weights (.pt files)
+├── DL_report.docx                      ← Final academic assignment report
+├── video_script_10min.md               ← 10-minute presentation script
 ├── requirements.txt
 └── README.md
 ```
@@ -64,7 +72,7 @@ os.chdir('/content/dl-assignment')
 
 ### 3. Set up Google Drive folder structure (once per person)
 Create this folder in your Google Drive:
-```
+```text
 MyDrive/retail-demand-forecasting/
 ├── data/m5/extracted/      ← place M5 CSVs here
 └── data/m5/processed/      ← auto-created
@@ -77,15 +85,17 @@ USE_DRIVE = True   # ← keep True for Colab+Drive
 Cell 0 mounts Drive, sets `DATA_PATH` and `PROCESSED_PATH`, and checks GPU.
 
 ### 5. Run notebooks in order
-```
+```text
 01_raw_data_exploration.ipynb
 02_data_cleaning.ipynb
 03_feature_engineering.ipynb
-04_model_lstm.ipynb
+04_data_splitting.ipynb
+05_scaling.ipynb
 05_model_gru.ipynb
-06_model_tcn.ipynb
-07_model_transformer.ipynb
-08_comparison.ipynb
+06_sequence_generation.ipynb
+08_tcn.ipynb
+10_transformer.ipynb
+11_unified_evaluation.ipynb
 ```
 
 ---
@@ -97,12 +107,12 @@ Cell 0 mounts Drive, sets `DATA_PATH` and `PROCESSED_PATH`, and checks GPU.
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-pip install pyarrow
+pip install pyarrow tabulate
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 ```
 
 ### 2. Place M5 dataset
-```
+```text
 dl-assignment/data/m5/extracted/
     calendar.csv
     sell_prices.csv
@@ -161,6 +171,6 @@ The dataset is NOT committed to this repository.
 See `requirements.txt`. Install with:
 ```bash
 pip install -r requirements.txt
-pip install pyarrow  # for parquet cache (fast data loading)
+pip install pyarrow tabulate # for parquet cache & markdown tables
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118  # CUDA GPU
 ```
