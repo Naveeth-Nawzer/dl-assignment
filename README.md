@@ -152,6 +152,26 @@ and add a config file with `model.name` set to its key.
 
 ---
 
+
+## LSTM Architecture
+
+The LSTM model uses the same input and evaluation setup as the other forecasting models.
+
+| Configuration | Value |
+|---|---|
+| Input sequence | Previous 28 days |
+| Input features | 15 |
+| LSTM layers | 2 |
+| Hidden size | 64 |
+| Dropout | 0.2 |
+| Output | 7-day forecast |
+| Loss | Mean Squared Error (MSE) |
+| Optimizer | Adam |
+| Gradient clipping | 1.0 |
+| Random seed | 42 |
+
+The LSTM implementation is available in `src/models/lstm.py`, with its model configuration defined in `configs/lstm.yaml`.
+
 ## Dataset
 
 The M5 dataset is available from Kaggle:
